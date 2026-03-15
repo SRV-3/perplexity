@@ -5,9 +5,3 @@ const model = new ChatGoogleGenerativeAI({
   model: "gemini-2.5-flash-lite",
   apiKey: process.env.GEMINI_API_KEY,
 });
-
-export async function testAi() {
-  model.invoke("what is ai explain under 100 words").then((response) => {
-    console.log(response.text);
-  });
-}
