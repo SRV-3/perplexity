@@ -1,51 +1,24 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Ragister = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
 
     try {
-      // Validate form
-      if (!formData.username || !formData.email || !formData.password) {
-        setError("Please fill in all fields");
-        setLoading(false);
-        return;
-      }
-
-      if (formData.password.length < 6) {
-        setError("Password must be at least 6 characters long");
-        setLoading(false);
-        return;
-      }
-
       // TODO: Add registration API call here
-      console.log("Registration attempt:", formData);
+      console.log("Registration attempt:", { username, email, password });
 
       // Reset form on success
-      setFormData({ username: "", email: "", password: "" });
+      setUsername("");
+      setEmail("");
+      setPassword("");
     } catch (err) {
-      setError(err.message || "An error occurred");
-    } finally {
-      setLoading(false);
+      console.log(err);
     }
   };
 
@@ -74,9 +47,8 @@ const Ragister = () => {
               <input
                 type="text"
                 id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 placeholder="Choose a username"
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition"
                 style={{ "--tw-ring-color": "rgb(49, 184, 198)" }}
@@ -96,9 +68,8 @@ const Ragister = () => {
               <input
                 type="email"
                 id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition"
                 style={{ "--tw-ring-color": "rgb(49, 184, 198)" }}
@@ -118,9 +89,8 @@ const Ragister = () => {
               <input
                 type="password"
                 id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition"
                 style={{ "--tw-ring-color": "rgb(49, 184, 198)" }}
@@ -132,60 +102,45 @@ const Ragister = () => {
               </p>
             </div>
 
-            {/* Error Message */}
-            {error && (
-              <div
-                className="px-4 py-2 rounded-lg text-sm border"
-                style={{
-                  backgroundColor: "rgba(49, 184, 198, 0.1)",
-                  borderColor: "#31b8c6",
-                  color: "#31b8c6",
-                }}
-              >
-                {error}
-              </div>
-            )}
-
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-2 px-4 text-white font-semibold rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full py-2 px-4 text-white font-semibold rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
               style={{ backgroundColor: "#31b8c6" }}
               onMouseEnter={(e) => (e.target.style.backgroundColor = "#289aad")}
               onMouseLeave={(e) => (e.target.style.backgroundColor = "#31b8c6")}
             >
-              {loading ? "Creating account..." : "Register"}
+              Register
             </button>
           </form>
 
           {/* Terms and Conditions */}
           <p className="text-center mt-6 text-xs text-gray-500">
             By registering, you agree to our{" "}
-            <a
-              href="#"
+            <Link
+              to="#"
               className="transition"
               style={{ color: "#31b8c6" }}
               onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
               onMouseLeave={(e) => (e.target.style.opacity = "1")}
             >
               Terms of Service
-            </a>
+            </Link>
           </p>
 
           {/* Login Link */}
           <div className="text-center mt-4 pt-4 border-t border-gray-700">
             <p className="text-gray-400 text-sm">
               Already have an account?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="font-medium transition"
                 style={{ color: "#31b8c6" }}
                 onMouseEnter={(e) => (e.target.style.opacity = "0.8")}
                 onMouseLeave={(e) => (e.target.style.opacity = "1")}
               >
                 Login here
-              </a>
+              </Link>
             </p>
           </div>
         </div>
