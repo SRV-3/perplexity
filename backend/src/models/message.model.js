@@ -7,12 +7,6 @@ const messageSchema = new mongoose.Schema(
       ref: "Chat",
       required: [true, "Message must belong to a chat"],
     },
-    content: {
-      type: String,
-      required: [true, "Message content is required"],
-      trim: true,
-      minlength: [1, "Message cannot be empty"],
-    },
     role: {
       type: String,
       enum: {
@@ -21,23 +15,17 @@ const messageSchema = new mongoose.Schema(
       },
       required: [true, "Please specify the role of the message"],
     },
+    content: {
+      type: String,
+      required: [true, "Message content is required"],
+      trim: true,
+      minlength: [1, "Message cannot be empty"],
+    },
   },
   {
     timestamps: true, // Automatically creates createdAt and updatedAt
   },
 );
-
-// Populate chat information when fetching a message
-messageSchema.pre(/^find/, function (next) {
-  if (this.options._recursed) {
-    return next();
-  }
-  this.populate({
-    path: "chat",
-    select: "title user",
-  });
-  next();
-});
 
 const messageModel = mongoose.model("messages", messageSchema);
 export default messageModel;

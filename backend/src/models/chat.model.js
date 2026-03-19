@@ -21,16 +21,16 @@ const chatSchema = new mongoose.Schema(
 );
 
 // Populate user information when fetching a chat
-chatSchema.pre(/^find/, function (next) {
-  if (this.options._recursed) {
-    return next();
-  }
-  this.populate({
-    path: "user",
-    select: "username email",
-  });
-  next();
-});
+// chatSchema.pre(/^find/, function (next) {
+//   if (this.options._recursed) {
+//     return next();
+//   }
+//   this.populate({
+//     path: "user",
+//     select: "username email",
+//   });
+//   next();
+// });
 
 const chatModel = mongoose.model("chats", chatSchema);
 export default chatModel;
