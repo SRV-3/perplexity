@@ -3,7 +3,7 @@ import chatModel from "../models/chat.model.js";
 import messageModel from "../models/message.model.js";
 
 export async function sendMessage(req, res) {
-  const { message, chatId } = req.body;
+  const { message, chat: chatId } = req.body;
 
   let title = null,
     chat = null;
@@ -22,7 +22,7 @@ export async function sendMessage(req, res) {
     role: "user",
   });
 
-  const messages = await messageModel.find({ chat: chatId });
+  const messages = await messageModel.find({ chat: chatId || chat._id });
 
   const result = await generateResponse(messages);
 
