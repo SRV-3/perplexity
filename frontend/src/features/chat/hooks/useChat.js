@@ -3,14 +3,16 @@ import {
   sendMessage,
   getChats,
   getMessages,
-  deleteChat,
+  deleteChats,
 } from "../service/chat.api.js";
 import { useDispatch } from "react-redux";
 import {
   setChats,
   setCurrentChatId,
   setLoading,
+  createNewChat,
   setError,
+  addNewMessage,
 } from "../chat.slice.js";
 
 export const useChat = () => {
@@ -21,14 +23,23 @@ export const useChat = () => {
     const data = await sendMessage({ message, chatid });
     const { chat, aiMessage } = data;
     dispatch(
-      setChats((prev) => {
-        return {
-          ...prev,
-          [chat.title]: {
-            ...chat,
-            message: [{ content: message, role: "user" }, aiMessage],
-          },
-        };
+      createNewChat({
+        chatid: chat._id,
+        title: chat.title,
+      }),
+    );
+    dispatch(
+      addNewMessage({
+        chatid: chat._id,
+        content: message,
+        role: "user",
+      }),
+    );
+    dispatch(
+      addNewMessage({
+        chatid: chat._id,
+        content: aiMessage.content,
+        role: aiMessage.role,
       }),
     );
     dispatch(setCurrentChatId(chat._id));

@@ -3,15 +3,19 @@ import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
 
 const Dashboard = () => {
-  const { user } = useSelector((state) => state.auth);
+  const user = "s";
   const chat = useChat();
+
   const messagesEndRef = useRef(null);
-  const [messages, setMessages] = useState([
-    { role: "user", content: "hello" },
-    { role: "ai", content: "Hello! How can I help you today?" },
-  ]);
+  const [messages, setMessages] = useState([]);
+
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+
+  const allChats = useSelector((state) => state.chat.chats);
+  const currentChatId = useSelector((state) => state.chat.currentChatId);
+  console.log(allChats);
+
   const [chats, setChats] = useState([
     { id: 1, title: "Chat Title 1" },
     { id: 2, title: "Chat Title 2" },
@@ -31,21 +35,15 @@ const Dashboard = () => {
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    const trimmedMessage = input.trim();
+    if (!trimmedMessage) return;
 
-    const userMessage = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
+    chat.handleSendMessage({ message: trimmedMessage, chatid: currentChatId });
+
     setInput("");
     setIsTyping(true);
 
     // Mock AI Response
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", content: `Echo: ${userMessage.content}` },
-      ]);
-      setIsTyping(false);
-    }, 1500);
   };
 
   return (
@@ -77,7 +75,7 @@ const Dashboard = () => {
         </div>
 
         <div className="p-4 border-t border-[#2f2f2f] flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500" />
+          <div className="w-8 h-8 rounded-full" />
           <p className="text-sm font-medium truncate">
             {user?.username || "Guest"}
           </p>
@@ -87,7 +85,7 @@ const Dashboard = () => {
       {/* Main Chat Area */}
       <section className="flex-1 h-full flex flex-col items-center relative">
         <div className="w-full max-w-3xl flex-1 overflow-y-auto scrollbar-hide pt-10 px-4 space-y-8 pb-32">
-          {messages.map((msg, index) => (
+          {allChats[currentChatId]?.messages.map((msg, index) => (
             <div
               key={index}
               className={`flex flex-col w-full ${
@@ -126,7 +124,7 @@ const Dashboard = () => {
         </div>
 
         {/* Floating Input Bar */}
-        <div className="absolute bottom-0 w-full p-8 flex justify-center bg-gradient-to-t from-[#171717] via-[#171717] to-transparent">
+        <div className="absolute bottom-0 w-full p-8 flex justify-center">
           <form
             onSubmit={handleSendMessage}
             className="w-full max-w-3xl relative group"
