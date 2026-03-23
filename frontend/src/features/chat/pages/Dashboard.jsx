@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import ReactMarkdown from "react-markdown";
 import { useChat } from "../hooks/useChat";
 
 const Dashboard = () => {
@@ -12,15 +13,10 @@ const Dashboard = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  const allChats = useSelector((state) => state.chat.chats);
+  const chats = useSelector((state) => state.chat.chats);
   const currentChatId = useSelector((state) => state.chat.currentChatId);
-  console.log(allChats);
 
-  const [chats, setChats] = useState([
-    { id: 1, title: "Chat Title 1" },
-    { id: 2, title: "Chat Title 2" },
-  ]);
-
+  console.log(currentChatId);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -31,6 +27,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     chat.initializeSocketConnection();
+    chat.handleGetChats();
   }, []);
 
   const handleSendMessage = (e) => {
@@ -38,12 +35,14 @@ const Dashboard = () => {
     const trimmedMessage = input.trim();
     if (!trimmedMessage) return;
 
-    chat.handleSendMessage({ message: trimmedMessage, chatid: currentChatId });
+    chat.handleSendMessage({ message: trimmedMessage, chatId: currentChatId });
 
     setInput("");
     setIsTyping(true);
+  };
 
-    // Mock AI Response
+  const openChat = (chatId) => {
+    chat.handleOpenChat(chatId);
   };
 
   return (
@@ -61,8 +60,9 @@ const Dashboard = () => {
           </button>
 
           <div className="space-y-1">
-            {chats.map((c) => (
+            {Object.values(chats).map((c) => (
               <div
+                onClick={() => openChat(c.id)}
                 key={c.id}
                 className="group relative p-3 rounded-xl hover:bg-[#212121] cursor-pointer transition-all border border-transparent hover:border-[#2f2f2f]"
               >
@@ -85,7 +85,7 @@ const Dashboard = () => {
       {/* Main Chat Area */}
       <section className="flex-1 h-full flex flex-col items-center relative">
         <div className="w-full max-w-3xl flex-1 overflow-y-auto scrollbar-hide pt-10 px-4 space-y-8 pb-32">
-          {allChats[currentChatId]?.messages.map((msg, index) => (
+          {chats[currentChatId]?.messages.map((msg, index) => (
             <div
               key={index}
               className={`flex flex-col w-full ${
@@ -109,17 +109,21 @@ const Dashboard = () => {
                     </span>
                   </div>
                 )}
-                <p>{msg.content}</p>
+                {msg.role === "ai" ? (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                ) : (
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
+                )}
               </div>
             </div>
           ))}
-          {isTyping && (
+          {/* {isTyping && (
             <div className="flex items-center gap-2 text-neutral-500 ml-2">
               <div className="w-2 h-2 bg-neutral-500 rounded-full animate-bounce" />
               <div className="w-2 h-2 bg-neutral-500 rounded-full animate-bounce [animation-delay:-.3s]" />
               <div className="w-2 h-2 bg-neutral-500 rounded-full animate-bounce [animation-delay:-.5s]" />
             </div>
-          )}
+          )} */}
           <div ref={messagesEndRef} />
         </div>
 
