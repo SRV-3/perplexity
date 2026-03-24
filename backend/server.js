@@ -3,7 +3,6 @@ import app from "./src/app.js";
 import http from "http";
 import connectDB from "./src/config/databse.js";
 import { initSocket } from "./src/sockets/server.socket.js";
-// import { testAi } from "./src/services/ai.service.js";
 
 const PORT = process.env.PORT || 8000;
 

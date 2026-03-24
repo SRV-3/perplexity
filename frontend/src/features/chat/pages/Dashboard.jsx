@@ -16,7 +16,6 @@ const Dashboard = () => {
   const chats = useSelector((state) => state.chat.chats);
   const currentChatId = useSelector((state) => state.chat.currentChatId);
 
-  console.log(currentChatId);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -42,7 +41,7 @@ const Dashboard = () => {
   };
 
   const openChat = (chatId) => {
-    chat.handleOpenChat(chatId);
+    chat.handleOpenChat(chatId, chats);
   };
 
   return (
@@ -124,7 +123,7 @@ const Dashboard = () => {
               <div className="w-2 h-2 bg-neutral-500 rounded-full animate-bounce [animation-delay:-.5s]" />
             </div>
           )} */}
-          <div ref={messagesEndRef} />
+          {/* <div ref={messagesEndRef} /> */}
         </div>
 
         {/* Floating Input Bar */}
