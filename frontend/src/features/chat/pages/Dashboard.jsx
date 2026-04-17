@@ -29,7 +29,7 @@ const Dashboard = () => {
     chat.handleGetChats();
   }, []);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     const trimmedMessage = input.trim();
     if (!trimmedMessage) return;
